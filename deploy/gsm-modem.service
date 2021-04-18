@@ -1,0 +1,14 @@
+[Unit]
+Description=GSM Modem Service
+
+[Service]
+WorkingDirectory=/apps/gsm-modem/src/DataService/bin/Debug/netcoreapp5.0/publish
+ExecStart=/usr/bin/dotnet /apps/gsm-modem/src/DataService/bin/Debug/netcoreapp5.0/publish/DataService.dll
+Restart=always
+RestartSec=60
+SyslogIdentifier=gsm-modem
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
