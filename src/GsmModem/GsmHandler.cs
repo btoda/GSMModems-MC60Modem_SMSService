@@ -71,7 +71,7 @@ namespace GsmModem
                 }
                 // wait for 5 seconds for the service to start
                 Console.WriteLine("Waiting for service to start...");
-                System.Threading.Thread.Sleep(10000);
+                System.Threading.Thread.Sleep(20000);
             }
         }
 
