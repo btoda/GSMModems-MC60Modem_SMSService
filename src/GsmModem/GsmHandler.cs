@@ -13,7 +13,18 @@ namespace GsmModem
             if(_pinCode == null || _pinCode.Length!=4){
                 throw new Exception("Invalid pincode.");
             }
+
+            this.Test();
+
+
             this.Init();
+
+        }
+
+        private void Test(){
+            Console.WriteLine("testing");
+            SendMessage("ATI");
+            WaitForReply();
         }
 
         private void SendMessage(string message){
@@ -33,11 +44,12 @@ namespace GsmModem
                 if(line.Contains("ERROR")){
                     throw new Exception("GSM Error " + line);
                 }
-                foreach(string waitedMessage in waitedMessages){
-                    if(line.Contains(waitedMessage)){
-                        resultMessage = waitedMessage;
+                if(waitedMessages!=null)
+                    foreach(string waitedMessage in waitedMessages){
+                        if(line.Contains(waitedMessage)){
+                            resultMessage = waitedMessage;
+                        }
                     }
-                }
                 if(line.Contains("OK")){
                     return resultMessage;
                 }
@@ -46,8 +58,8 @@ namespace GsmModem
         }
 
         private void CheckPIN(){
-            SendMessage("AT+CPIN=?");
-            string result = WaitForReply("+CPIN: SIM PIN", "AT+CPIN=?");
+            SendMessage("AT+CPIN?");
+            string result = WaitForReply("+CPIN: SIM PIN");
             if(result == "+CPIN: SIM PIN")
             {
                 // enter pin
