@@ -13,12 +13,7 @@ namespace GsmModem
             }
             Console.WriteLine(portName);
             GsmHandler handler = new GsmHandler(portName, 9600, "0000");
-            try{
-                handler.SendSms("0754588580"," TEST GSM MODEM ");
-            }
-            catch{
-                handler.SendSms("0754588580"," TEST GSM MODEM ");
-            }
+            handler.SendSms("0754588580"," TEST GSM MODEM ");
         }
     }
 }

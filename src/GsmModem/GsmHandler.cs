@@ -69,9 +69,7 @@ namespace GsmModem
                 if(result!="+CPIN: READY"){
                     throw new Exception("Invalid pincode.");
                 }
-                // wait for 5 seconds for the service to start
-                Console.WriteLine("Waiting for service to start...");
-                System.Threading.Thread.Sleep(2000);
+                WaitForReply("SMS Ready");
             }
         }
 
