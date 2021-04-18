@@ -6,7 +6,9 @@ namespace GsmModem
     public class GsmHandler{
         private string _pinCode = null;
         private SerialPort _port = null;
-        public GsmHandler(string serialPort, int baudRate, string pinCode){
+        public string Name { get; set; }
+        public GsmHandler(string name, string serialPort, int baudRate, string pinCode){
+            this.Name = name;
             _port = new SerialPort(serialPort, baudRate);
             _port.Open();
             _pinCode = pinCode;
@@ -39,6 +41,7 @@ namespace GsmModem
             string resultMessage = null;
             while(!done && lines<maxLines){
                 string line = _port.ReadLine();
+                line = line.Trim();
                 Console.WriteLine("Message Received: "+line);
                 lines ++;
                 if(line.Contains("ERROR")){
@@ -46,6 +49,15 @@ namespace GsmModem
                 }
                 if(waitedMessages!=null)
                     foreach(string waitedMessage in waitedMessages){
+                        try{
+                            if(System.Text.RegularExpressions.Regex.IsMatch(line, waitedMessage)){
+                                resultMessage = line;
+                                break;
+                            }
+                        }
+                        catch{
+
+                        }
                         if(line.Contains(waitedMessage)){
                             resultMessage = waitedMessage;
                         }
@@ -77,7 +89,7 @@ namespace GsmModem
             CheckPIN();
         }
 
-        public void SendSms(string phoneNumber, string message){
+        public string SendSms(string phoneNumber, string message){
             SendMessage("AT+CMGS=?");
             string result = WaitForReply("OK");
             if(result!="OK"){
@@ -92,7 +104,14 @@ namespace GsmModem
 
             SendMessage("AT+CMGS=\""+phoneNumber+"\"");
             SendMessage(message+(char)26); // (char)26 - ctrl+z
-            WaitForReply("OK");
+            //+CMGS: 16 - response message with id 16
+            string response = WaitForReply("\\+CMGS: [0-9]+");
+            if(response!=null && response.StartsWith("+CMGS: ")){
+                string id = response.Replace("+CMGS: ", string.Empty);
+                return this.Name+"_MSG"+id;
+            }
+
+            return null;
         }
     }
 }
