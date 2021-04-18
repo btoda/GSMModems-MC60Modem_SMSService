@@ -59,6 +59,7 @@ namespace GsmModem
 
         private void CheckPIN(){
             SendMessage("AT+CPIN?");
+            WaitForReply();
             string result = WaitForReply("+CPIN: SIM PIN");
             if(result == "+CPIN: SIM PIN")
             {
